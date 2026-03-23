@@ -1,8 +1,13 @@
 using {ASM as db} from '/home/user/asset_management/db/schema.cds';
 
-service ManagerService {
+service ManagerService @(requiers:'asset_manager'){
   entity AllRequest as projection on db.T.ALLREQUESTS;
   entity AllAsset as projection on db.T.Asset;
+  
+@Capabilities.Readable: false
+  entity cate as projection on db.M.ASSETCATGORY;
+  @Capabilities.Readable: false
+  entity subcat as projection on db.M.Assetsubcategory;
   
     action ApproveRequest(
     REQID : Integer,

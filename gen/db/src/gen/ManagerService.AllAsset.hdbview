@@ -15,3 +15,7 @@ VIEW ManagerService_AllAsset AS SELECT
   Asset_0.CHNTM,
   Asset_0.CHNBY
 FROM ASM_T_Asset AS Asset_0
+WITH ASSOCIATIONS (
+  MANY TO ONE JOIN ManagerService_cate AS category ON (category.CATID = CATID),
+  MANY TO ONE JOIN ManagerService_subcat AS subcategory ON (subcategory.SCTID = SUBCATID)
+)

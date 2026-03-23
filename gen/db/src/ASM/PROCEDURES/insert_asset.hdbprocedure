@@ -13,26 +13,26 @@ BEGIN
     DECLARE V_COUNT INTEGER := 0;
     DECLARE V_ROLE  NVARCHAR(50);
 
-    -- Get role name
+    
     SELECT R.ROLNM INTO V_ROLE
     FROM "ASM_M_USEDT" U
     JOIN "ASM_M_ROLED" R
         ON U.ROLID = R.ROLD
     WHERE U.USRID = :P_USER;
 
-    -- User not found
+    
     IF :V_ROLE IS NULL THEN
         SIGNAL SQL_ERROR_CODE 10020
         SET MESSAGE_TEXT = 'User not found';
     END IF;
 
-    -- Authorization check
+   
     IF :V_ROLE <> 'asset_manager' THEN
         SIGNAL SQL_ERROR_CODE 10021
         SET MESSAGE_TEXT = 'Unauthorized: Only Asset Manager can create assets';
     END IF;
 
-    -- Check duplicate asset
+    
     SELECT COUNT(*) INTO V_COUNT
     FROM "ASM_T_ASSET"
     WHERE ASTID = :P_ASTID;
