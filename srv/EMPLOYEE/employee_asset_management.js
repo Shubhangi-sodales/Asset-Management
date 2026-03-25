@@ -2,33 +2,50 @@ module.exports = (srv) => {
 
   srv.on('CreateRequest', async (req) => {
 
-    const userId = parseInt(req.user.id) || 1001;
+    try {
+      const { USERID, CATID, ASTID, SCTID, PRITY } = req.data;
 
-    const { CATID, ASTID, PRITY } = req.data;
+      const userId = parseInt(USERID);
 
-    await cds.run(
-      'CALL create_request(?, ?, ?, ?)',
-      [userId, 
-        String(CATID), String(ASTID), String(PRITY)]
-    );
+      const result = await cds.run(`
+        CALL create_request(?,?,?,?,?,?)
+      `, [
+        '0',
+        userId,
+        PRITY,
+        CATID,
+        ASTID,
+        SCTID
+      ]);
 
-    return 'Request Created';
+      // Procedure returns SELECT → first row
+      const row = result?.[0];
+
+      return {
+        REQCODE: row?.REQCODE,
+        CATCODE: row?.CATCODE,
+        SUBCATCODE: row?.SUBCATCODE
+      };
+
+    } catch (err) {
+      console.error(err);
+      req.error(500, err.message);
+    }
+
   });
-    srv.on("getRequestsByUserId", async (req) => {
 
+  srv.on("getRequestsByUserId", async (req) => {
     const { USERID } = req.data;
 
     return await SELECT.from("EmployeeService.AllRequest")
-      .where({ USRID: USERID });  
-
+      .where({ USRID: USERID });
   });
-  srv.on("getAssetByAssetId", async (req) => {
 
+  srv.on("getAssetByAssetId", async (req) => {
     const { ASSTID } = req.data;
 
     return await SELECT.from("EmployeeService.AllAsset")
-      .where({ASTID : ASSTID });  
-
+      .where({ ASTID: ASSTID });
   });
 
 };

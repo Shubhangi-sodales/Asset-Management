@@ -80,15 +80,15 @@ key     ASRID: Integer64  @title: 'ASRID: Unique ID' ;
 }
 @cds.persistence.exists 
 @cds.persistence.calcview 
-Entity Asset {
-key     ASTID: String(30)  @title: 'ASTID: Unique ID' ; 
+Entity ASSETVIEW {
+key     ATUID: Integer64  @title: 'ATUID: Unique ID' ; 
+        ASTID: String(30)  @title: 'ASTID: ASSET ID' ; 
         ASTNAME: String(100)  @title: 'ASTNAME: Asset Name' ; 
         CATID: String(30)  @title: 'CATID: Category ID' ; 
         SUBCATID: String(30)  @title: 'SUBCATID: Sub Category ID' ; 
         SERIALNO: String(50)  @title: 'SERIALNO: Serial Number' ; 
         ASTST: String(20)  @title: 'ASTST: Asset Status (AVAILABLE / ASSIGNED / MAINTENANCE)' ; 
         PURCHASEDATE: Date  @title: 'PURCHASEDATE: Purchase Date' ; 
-        PRICE: Decimal(10)  @title: 'PRICE: Asset Price' ; 
         ISDEL: String(1)  @title: 'ISDEL: Is Deleted Flag' ; 
         CRTDT: Date  @title: 'CRTDT: Created Date' ; 
         CRTTM: Time  @title: 'CRTTM: Created Time' ; 
@@ -96,11 +96,6 @@ key     ASTID: String(30)  @title: 'ASTID: Unique ID' ;
         CHNDT: Date  @title: 'CHNDT: Changed/Updated Date' ; 
         CHNTM: Time  @title: 'CHNTM: Changed/Updated Time' ; 
         CHNBY: String(30)  @title: 'CHNBY: Changed By' ; 
-
-        category    : Association to ASM.M.ASSETCATGORY on category.CATID = CATID;
-        subcategory : Association to ASM.M.Assetsubcategory on  subcategory.SCTID = SUBCATID;
-
-
-
+        ASTQT: Integer  @title: 'ASTQT: Asset quantity' ; 
 }
 }

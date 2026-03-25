@@ -14,25 +14,27 @@ BEGIN
     DECLARE V_ROLE  NVARCHAR(50);
 
     
+    DECLARE V_NEW_ID NVARCHAR(30);
+    DECLARE V_MAX_NUM INTEGER;
+
     SELECT R.ROLNM INTO V_ROLE
     FROM "ASM_M_USEDT" U
     JOIN "ASM_M_ROLED" R
         ON U.ROLID = R.ROLD
     WHERE U.USRID = :P_USER;
 
-    
     IF :V_ROLE IS NULL THEN
         SIGNAL SQL_ERROR_CODE 10020
         SET MESSAGE_TEXT = 'User not found';
     END IF;
 
-   
+
     IF :V_ROLE <> 'asset_manager' THEN
         SIGNAL SQL_ERROR_CODE 10021
         SET MESSAGE_TEXT = 'Unauthorized: Only Asset Manager can create assets';
     END IF;
 
-    
+
     SELECT COUNT(*) INTO V_COUNT
     FROM "ASM_T_ASSET"
     WHERE ASTID = :P_ASTID;
@@ -42,7 +44,19 @@ BEGIN
         SET MESSAGE_TEXT = 'Asset already exists';
     END IF;
 
-    -- Insert asset
+   
+    SELECT IFNULL(MAX(
+        CASE 
+            WHEN ASTID LIKE 'A%' 
+            THEN TO_INTEGER(SUBSTRING(ASTID, 2))
+        END
+    ), 0)
+    INTO V_MAX_NUM
+    FROM "ASM_T_ASSET";
+
+    V_NEW_ID := 'A' || LPAD(:V_MAX_NUM + 1, 3, '0');
+
+   
     INSERT INTO "ASM_T_ASSET" (
         ASTID,
         ASTNAME,
@@ -51,21 +65,21 @@ BEGIN
         SERIALNO,
         ASTST,
         PURCHASEDATE,
-        PRICE,
+        ASTQT,
         ISDEL,
         CRTDT,
         CRTTM,
         CRTBY
     )
     VALUES (
-        :P_ASTID,
+        :V_NEW_ID,
         :P_ASTNAME,
         :P_CATID,
         :P_SUBCATID,
         NULL,
         'AVAILABLE',
         NULL,
-        NULL,
+        :P_QTY,
         'N',
         CURRENT_DATE,
         CURRENT_TIME,

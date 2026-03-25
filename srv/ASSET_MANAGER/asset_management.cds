@@ -2,7 +2,7 @@ using {ASM as db} from '/home/user/asset_management/db/schema.cds';
 
 service ManagerService {
   entity AllRequest as projection on db.T.ALLREQUESTS;
-  entity AllAsset as projection on db.T.Asset;
+  entity AllAsset as projection on db.T.ASSETVIEW;
   
 @Capabilities.Readable: false
   entity cate as projection on db.M.ASSETCATGORY;

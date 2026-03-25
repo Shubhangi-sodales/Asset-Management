@@ -1,15 +1,17 @@
-# POST http://localhost:4004/odata/v2/employee/CreateRequest
+# POST http://localhost:4004/odata/v4/employee/CreateRequest
 # Content-Type: application/json
 
 # {
-# "CATID": "C001",
-# "ASTID": "102",
-# "PRITY":"High"
+#   "USERID": 1001,
+#   "CATID": "C001",
+#   "ASTID": "A102",
+#   "SCTID": "SC001",
+#   "PRITY": "High"
 # }
 //GET http://localhost:4004/odata/v2/manager/AllRequest
 //GET http://localhost:4004/odata/v2/employee/getRequestsByUserId(USERID='1001') 
 
-GET  http://localhost:4004/odata/v4/employee/subcat?$filter=CATID eq 'C001'
+//GET  http://localhost:4004/odata/v4/employee/subcat?$filter=CATID eq 'C001'
 
     # POST http://localhost:4004/odata/v2/manager/ApproveRequest
     # Content-Type: application/json
@@ -25,13 +27,13 @@ GET  http://localhost:4004/odata/v4/employee/subcat?$filter=CATID eq 'C001'
 #   "REQID": "P001",
 #   "ASTID": 102
 # }
-# POST http://localhost:4004/odata/v2/manager/insertAsset
-# Content-Type: application/json
+POST http://localhost:4004/odata/v2/manager/insertAsset
+Content-Type: application/json
 
-# {
-#   "P_ASTID": 101,
-#   "P_ASTNAME": "Dell Laptop",
-#   "P_CATID": 1,
-#   "P_SUBCATID": 10,
-#   "P_QTY": 5
-# }
+{
+  "P_ASTID": "102",
+  "P_ASTNAME": "Dell Laptop",
+  "P_CATID": "C002",
+  "P_SUBCATID": "S001",
+  "P_QTY": 5
+}

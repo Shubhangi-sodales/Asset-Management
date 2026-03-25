@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ASM_T_Asset" applyPrivilegeType="NONE" dataCategory="DIMENSION" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS">
-<descriptions defaultDescription="ASM_T_Asset"/>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ASM_T_ASSETVIEW" applyPrivilegeType="NONE" dataCategory="DIMENSION" dimensionType="STANDARD" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Projection" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS">
+<descriptions defaultDescription="ASM_T_ASSETVIEW"/>
 <localVariables/>
 <variableMappings/>
 <dataSources>
@@ -12,6 +12,7 @@
 <calculationViews>
   <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
     <viewAttributes>
+      <viewAttribute id="ATUID"/>
       <viewAttribute id="ASTID"/>
       <viewAttribute id="ASTNAME"/>
       <viewAttribute id="CATID"/>
@@ -19,7 +20,6 @@
       <viewAttribute id="SERIALNO"/>
       <viewAttribute id="ASTST"/>
       <viewAttribute id="PURCHASEDATE"/>
-      <viewAttribute id="PRICE"/>
       <viewAttribute id="ISDEL"/>
       <viewAttribute id="CRTDT"/>
       <viewAttribute id="CRTTM"/>
@@ -27,6 +27,7 @@
       <viewAttribute id="CHNDT"/>
       <viewAttribute id="CHNTM"/>
       <viewAttribute id="CHNBY"/>
+      <viewAttribute id="ASTQT"/>
     </viewAttributes>
     <calculatedViewAttributes/>
     <input node="ASM_T_ASSET"/>
@@ -35,37 +36,37 @@
 
 <logicalModel id="Projection_1">
   <attributes>
-    <attribute id="ASTID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="ATUID" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Unique ID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ATUID"/>
+    </attribute>
+    <attribute id="ASTID" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ASSET ID"/>
       <keyMapping columnObjectName="Projection_1" columnName="ASTID"/>
     </attribute>
-    <attribute id="ASTNAME" order="2" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="ASTNAME" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Asset Name"/>
       <keyMapping columnObjectName="Projection_1" columnName="ASTNAME"/>
     </attribute>
-    <attribute id="CATID" order="3" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="CATID" order="4" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Category ID"/>
       <keyMapping columnObjectName="Projection_1" columnName="CATID"/>
     </attribute>
-    <attribute id="SUBCATID" order="4" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="SUBCATID" order="5" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Sub Category ID"/>
       <keyMapping columnObjectName="Projection_1" columnName="SUBCATID"/>
     </attribute>
-    <attribute id="SERIALNO" order="5" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="SERIALNO" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Serial Number"/>
       <keyMapping columnObjectName="Projection_1" columnName="SERIALNO"/>
     </attribute>
-    <attribute id="ASTST" order="6" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="ASTST" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Asset Status (AVAILABLE / ASSIGNED / MAINTENANCE)"/>
       <keyMapping columnObjectName="Projection_1" columnName="ASTST"/>
     </attribute>
-    <attribute id="PURCHASEDATE" order="7" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="PURCHASEDATE" order="8" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Purchase Date"/>
       <keyMapping columnObjectName="Projection_1" columnName="PURCHASEDATE"/>
-    </attribute>
-    <attribute id="PRICE" order="8" displayAttribute="false" attributeHierarchyActive="false">
-      <descriptions defaultDescription="Asset Price"/>
-      <keyMapping columnObjectName="Projection_1" columnName="PRICE"/>
     </attribute>
     <attribute id="ISDEL" order="9" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Is Deleted Flag"/>
@@ -95,11 +96,16 @@
       <descriptions defaultDescription="Changed By"/>
       <keyMapping columnObjectName="Projection_1" columnName="CHNBY"/>
     </attribute>
+    <attribute id="ASTQT" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Asset quantity"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ASTQT"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
   <baseMeasures/>
   <calculatedMeasures/>
-  <restrictedMeasures/></logicalModel>
+  <restrictedMeasures/>
+</logicalModel>
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
@@ -108,7 +114,7 @@
     
   
     <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="94" y="198"/>
+      <upperLeftCorner x="100" y="202"/>
       <rectangleSize height="30" width="160"/>
     </shape>
   </shapes>
