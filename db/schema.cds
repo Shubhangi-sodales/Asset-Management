@@ -115,6 +115,8 @@ key     ATUID: Integer64  @title: 'ATUID: Unique ID' ;
         CHNTM: Time  @title: 'CHNTM: Changed/Updated Time' ; 
         CHNBY: String(30)  @title: 'CHNBY: Changed By' ; 
         ASTQT: Integer  @title: 'ASTQT: Asset quantity' ; 
+
+        category: association to M.ASSETCATGORY on category.CATID = CATID;
 }
 @cds.persistence.exists 
 @cds.persistence.calcview 

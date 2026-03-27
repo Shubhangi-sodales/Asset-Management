@@ -3,7 +3,9 @@ PROCEDURE insert_asset (
     IN P_CATID       NVARCHAR(30),
     IN P_SUBCATID    NVARCHAR(30),
     IN P_QTY         INTEGER,
-    IN P_USER        INTEGER
+    IN P_USER        INTEGER,
+    IN P_SERIALNO    NVARCHAR(50),     -- NEW
+    IN P_PURCHASEDATE DATE             -- NEW
 )
 LANGUAGE SQLSCRIPT
 AS
@@ -35,7 +37,7 @@ BEGIN
     END IF;
 
     ------------------------------------------------------------------
-    -- ✅ 2. CHECK IF ASSET EXISTS (BUSINESS KEY)
+    -- ✅ 2. CHECK IF ASSET EXISTS
     ------------------------------------------------------------------
     SELECT MAX(ASTID) INTO V_EXIST_ID
     FROM "ASM_T_ASSET"
@@ -51,6 +53,8 @@ BEGIN
         UPDATE "ASM_T_ASSET"
         SET 
             ASTQT = :P_QTY,
+            SERIALNO = :P_SERIALNO,           -- NEW
+            PURCHASEDATE = :P_PURCHASEDATE,   -- NEW
             ASTST = CASE 
                         WHEN :P_QTY <= 0 THEN 'OUT_OF_STOCK'
                         ELSE 'AVAILABLE'
@@ -98,12 +102,12 @@ BEGIN
             :P_ASTNAME,
             :P_CATID,
             :P_SUBCATID,
-            NULL,
+            :P_SERIALNO,                      -- NEW
             CASE 
                 WHEN :P_QTY <= 0 THEN 'OUT_OF_STOCK'
                 ELSE 'AVAILABLE'
             END,
-            NULL,
+            :P_PURCHASEDATE,                  -- NEW
             :P_QTY,
             'N',
             CURRENT_DATE,

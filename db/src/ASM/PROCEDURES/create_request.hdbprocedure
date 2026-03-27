@@ -14,9 +14,7 @@ BEGIN
     DECLARE V_MAX_NUM INTEGER;
     DECLARE V_NEW_REQID NVARCHAR(30);
 
-    ----------------------------------------------------------------
-    -- Generate next REQID safely
-    ----------------------------------------------------------------
+   
     SELECT IFNULL(MAX(TO_INTEGER(SUBSTRING(REQID, 5))), 0)
     INTO V_MAX_NUM
     FROM "ASM_T_ASREQ"
@@ -24,9 +22,7 @@ BEGIN
 
     V_NEW_REQID := 'REQ_' || LPAD(:V_MAX_NUM + 1, 3, '0');
 
-    ----------------------------------------------------------------
-    -- INSERT
-    ----------------------------------------------------------------
+  
     INSERT INTO "ASM_T_ASREQ" (
         REQID,
         USRID,
@@ -56,9 +52,7 @@ BEGIN
         SESSION_CONTEXT('APPLICATION_USER')
     );
 
-    ----------------------------------------------------------------
-    -- RETURN
-    ----------------------------------------------------------------
+    
     SELECT 
         :V_NEW_REQID AS REQID,
         :V_NEW_REQID AS REQCODE

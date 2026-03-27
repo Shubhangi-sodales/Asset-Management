@@ -12,7 +12,7 @@ BEGIN
     DECLARE V_AST_STATUS NVARCHAR(20);
     DECLARE V_AST_QTY INTEGER;
 
-    -- Check request exists
+   
     SELECT COUNT(*) INTO V_REQ_COUNT
     FROM "ASM_T_ASREQ"
     WHERE REQID = :P_REQID;
@@ -22,20 +22,19 @@ BEGIN
         SET MESSAGE_TEXT = 'Request not found';
     END IF;
 
-    -- Get asset quantity
+    
     SELECT ASTQT INTO V_AST_QTY
     FROM "ASM_T_ASSET"
     WHERE ASTID = :P_ASTID;
 
-    -- If no stock or asset not found
+   
     IF :V_AST_QTY IS NULL OR :V_AST_QTY <= 0 THEN
 
-        -- Set asset status as OUT_OF_STOCK
+        
         UPDATE "ASM_T_ASSET"
         SET ASTST = 'OUT_OF_STOCK'
         WHERE ASTID = :P_ASTID;
 
-        -- Reject request
         UPDATE "ASM_T_ASREQ"
         SET STAT = 2
         WHERE REQID = :P_REQID;
@@ -44,12 +43,12 @@ BEGIN
 
     END IF;
 
-    -- Get asset status
+    
     SELECT ASTST INTO V_AST_STATUS
     FROM "ASM_T_ASSET"
     WHERE ASTID = :P_ASTID;
 
-    -- Reject if not available
+   
     IF :V_AST_STATUS <> 'AVAILABLE' THEN
 
         UPDATE "ASM_T_ASREQ"
@@ -60,12 +59,12 @@ BEGIN
 
     END IF;
 
-    -- Get user
+    
     SELECT USRID INTO V_USRID
     FROM "ASM_T_ASREQ"
     WHERE REQID = :P_REQID;
 
-    -- Insert assignment
+    
     INSERT INTO "ASM_T_ASAMT" (
         ASTID,
         USRID,
@@ -87,12 +86,12 @@ BEGIN
         'SYSTEM'
     );
 
-    -- Update request as assigned
+   
     UPDATE "ASM_T_ASREQ"
     SET STAT = 3
     WHERE REQID = :P_REQID;
 
-    -- ✅ Combined quantity + status update
+ 
     UPDATE "ASM_T_ASSET"
     SET 
         ASTQT = CASE 

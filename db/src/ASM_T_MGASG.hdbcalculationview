@@ -129,6 +129,10 @@
 
 <logicalModel id="Join_1_3">
   <attributes>
+    <attribute id="USRID" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="User ID"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="USRID"/>
+    </attribute>
     <attribute id="NAME" order="2" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Full Name"/>
       <keyMapping columnObjectName="Join_1_3" columnName="NAME"/>
@@ -145,26 +149,25 @@
       <descriptions defaultDescription="Asset Name"/>
       <keyMapping columnObjectName="Join_1_3" columnName="ASTNAME"/>
     </attribute>
+  
+    <attribute id="ASDAT" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Assigned Date"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="ASDAT"/>
+    </attribute>
+    <attribute id="STAT" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Status"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="STAT"/>
+    </attribute>
   </attributes>
   <calculatedAttributes/>
-  <baseMeasures>
-    <measure id="USRID" order="1" aggregationType="sum" measureType="simple">
-      <descriptions defaultDescription="User ID"/>
-      <measureMapping columnObjectName="Join_1_3" columnName="USRID"/>
+  <baseMeasures/>
+  <calculatedMeasures>
+    <measure id="CC_1" order="8" aggregationType="count" measureType="simple" datatype="NVARCHAR" length="13" expressionLanguage="SQL">
+      <formula>0</formula>
+      
       <exceptionAggregationMetadata/>
     </measure>
-    <measure id="ASDAT" order="6" aggregationType="min" measureType="simple">
-      <descriptions defaultDescription="Assigned Date"/>
-      <measureMapping columnObjectName="Join_1_3" columnName="ASDAT"/>
-      <exceptionAggregationMetadata/>
-    </measure>
-    <measure id="STAT" order="7" aggregationType="sum" measureType="simple">
-      <descriptions defaultDescription="Status"/>
-      <measureMapping columnObjectName="Join_1_3" columnName="STAT"/>
-      <exceptionAggregationMetadata/>
-    </measure>
-  </baseMeasures>
-  <calculatedMeasures/>
+  </calculatedMeasures>
   <restrictedMeasures/>
   <localDimensions/>
 </logicalModel>
