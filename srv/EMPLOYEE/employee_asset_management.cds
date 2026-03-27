@@ -1,4 +1,4 @@
-using { ASM as db } from '/home/user/asset_management/db/schema.cds';
+using { ASM as db } from '/home/user/projects/asset_management/db/schema.cds';
 
 service EmployeeService {
 
@@ -7,8 +7,14 @@ service EmployeeService {
 
   @Capabilities.Readable: false
   entity AllAsset as projection on db.T.ASSETVIEW;
+  
+  entity cate as projection on db.M.ASSETCATGORY;
+  
+  entity profile as projection on db.T.EMPDT;
 
-  entity subcat as projection on db.M.Assetsubcategory;
+  entity empreq as projection on db.T.EAS;
+
+  entity empassetassigned as projection on db.T.EPASG;
 
   action CreateRequest (
     USERID : Integer,
@@ -22,7 +28,9 @@ service EmployeeService {
     SUBCATCODE : String(30);
   };
 
+  
   function getRequestsByUserId(USERID: Integer) returns array of AllRequest;
 
   function getAssetByAssetId(ASSTID: String) returns array of AllAsset;
+
 }

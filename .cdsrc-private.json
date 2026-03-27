@@ -4,9 +4,9 @@
       "db": {
         "binding": {
           "type": "cf",
-          "apiEndpoint": "https://api.cf.us10-001.hana.ondemand.com",
-          "org": "6936805atrial",
-          "space": "dev",
+          "apiEndpoint": "https://api.cf.ca10.hana.ondemand.com",
+          "org": "Sodales (Sodales Solutions Inc)_sodales-trng-tc1hwks8",
+          "space": "Training",
           "instance": "asset_management-db",
           "key": "asset_management-db-key"
         },

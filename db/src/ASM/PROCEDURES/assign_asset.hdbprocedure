@@ -9,8 +9,8 @@ BEGIN
 
     DECLARE V_USRID INTEGER;
     DECLARE V_REQ_COUNT INTEGER;
-    DECLARE V_AST_COUNT INTEGER;
     DECLARE V_AST_STATUS NVARCHAR(20);
+    DECLARE V_AST_QTY INTEGER;
 
     -- Check request exists
     SELECT COUNT(*) INTO V_REQ_COUNT
@@ -22,18 +22,26 @@ BEGIN
         SET MESSAGE_TEXT = 'Request not found';
     END IF;
 
-    -- Check asset exists
-    SELECT COUNT(*) INTO V_AST_COUNT
+    -- Get asset quantity
+    SELECT ASTQT INTO V_AST_QTY
     FROM "ASM_T_ASSET"
     WHERE ASTID = :P_ASTID;
 
-    IF :V_AST_COUNT = 0 THEN
+    -- If no stock or asset not found
+    IF :V_AST_QTY IS NULL OR :V_AST_QTY <= 0 THEN
+
+        -- Set asset status as OUT_OF_STOCK
+        UPDATE "ASM_T_ASSET"
+        SET ASTST = 'OUT_OF_STOCK'
+        WHERE ASTID = :P_ASTID;
+
         -- Reject request
         UPDATE "ASM_T_ASREQ"
         SET STAT = 2
         WHERE REQID = :P_REQID;
 
         RETURN;
+
     END IF;
 
     -- Get asset status
@@ -84,9 +92,17 @@ BEGIN
     SET STAT = 3
     WHERE REQID = :P_REQID;
 
-    -- Update asset status
+    -- ✅ Combined quantity + status update
     UPDATE "ASM_T_ASSET"
-    SET ASTST = 'ASSIGNED'
+    SET 
+        ASTQT = CASE 
+                    WHEN ASTQT > 0 THEN ASTQT - 1 
+                    ELSE 0 
+                END,
+        ASTST = CASE 
+                    WHEN ASTQT - 1 <= 0 THEN 'OUT_OF_STOCK'
+                    ELSE 'AVAILABLE'
+                END
     WHERE ASTID = :P_ASTID;
 
 END;

@@ -33,6 +33,15 @@ key     ASCID: String(30)  @title: 'ASCID: Unique ID' ;
         
 }
 
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity USERVIEW {
+key     NAME: String(100)  @title: 'NAME: Full Name' ; 
+        USRID: Integer  @title: 'USRID: User ID' ; 
+}
+
+
     
 }
 context T{
@@ -64,6 +73,8 @@ key     ASRID: Integer64  @title: 'ASRID: Unique ID' ;
         REQID: String(30)  @title: 'REQID: Request ID' ; 
         USRID: String(30)  @title: 'USRID: User ID' ; 
         CATID: String(30)  @title: 'CATID: Category ID' ; 
+
+        
         ASTID: String(30)  @title: 'ASTID: Asset ID' ; 
         RDATE: Timestamp  @title: 'RDATE: Request Date' ; 
         STAT: Integer  @title: 'STAT: Status' ; 
@@ -77,7 +88,14 @@ key     ASRID: Integer64  @title: 'ASRID: Unique ID' ;
         CHNDT: Date  @title: 'CHNDT: Changed/Updated Date' ; 
         CHNTM: Time  @title: 'CHNTM: Changed/Updated Time' ; 
         CHNBY: String(30)  @title: 'CHNBY: Changed By' ; 
+        
+
+         category: association to M.ASSETCATGORY on category.CATID = CATID;
+        user: association to M.USERVIEW on user.USRID = USRID;
 }
+
+      
+
 @cds.persistence.exists 
 @cds.persistence.calcview 
 Entity ASSETVIEW {
@@ -98,4 +116,54 @@ key     ATUID: Integer64  @title: 'ATUID: Unique ID' ;
         CHNBY: String(30)  @title: 'CHNBY: Changed By' ; 
         ASTQT: Integer  @title: 'ASTQT: Asset quantity' ; 
 }
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity ASTVIEW {
+key     NAME: String(100)  @title: 'NAME: Full Name' ; 
+key     CNAME: String(100)  @title: 'CNAME: Category Name' ; 
+        RDATE: Timestamp  @title: 'RDATE: Request Date' ; 
+        STAT: Integer  @title: 'STAT: Status' ; 
+key     PRITY: String(20)  @title: 'PRITY: Priority' ; 
+}
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity EMPDT {
+        USRID: Integer  @title: 'USRID: User ID' ; 
+key     NAME: String(100)  @title: 'NAME: Full Name' ; 
+key     ROLNM: String(100)  @title: 'ROLNM: role name' ; 
+key     DNAME: String(100)  @title: 'DNAME: DEPARTMENT name' ; 
+}
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity EAS {
+        USRID: Integer  @title: 'USRID: User ID' ; 
+key     REQID: String(30)  @title: 'REQID: Request ID' ; 
+key     CNAME: String(100)  @title: 'CNAME: Category Name' ; 
+        STAT: Integer  @title: 'STAT: Status' ; 
+}
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity EPASG {
+key     ASTID: String(30)  @title: 'ASTID: ASSET ID' ; 
+        SERIALNO: String(50)  @title: 'SERIALNO: Serial Number' ; 
+        ASTNAME: String(100)  @title: 'ASTNAME: Asset Name' ; 
+        USRID: Integer  @title: 'USRID: User ID' ; 
+        ASDAT: Timestamp  @title: 'ASDAT: Assigned Date' ; 
+}
+
+@cds.persistence.exists 
+@cds.persistence.calcview 
+Entity MGASG {
+        USRID: Integer  @title: 'USRID: User ID' ; 
+key     NAME: String(100)  @title: 'NAME: Full Name' ; 
+key     CNAME: String(100)  @title: 'CNAME: Category Name' ; 
+key     ASTID: String(30)  @title: 'ASTID: ASSET ID' ; 
+key     ASTNAME: String(100)  @title: 'ASTNAME: Asset Name' ; 
+        ASDAT: Timestamp  @title: 'ASDAT: Assigned Date' ; 
+        STAT: Integer  @title: 'STAT: Status' ; 
+}
+
+
 }

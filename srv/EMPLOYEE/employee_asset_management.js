@@ -34,12 +34,15 @@ module.exports = (srv) => {
 
   });
 
-  srv.on("getRequestsByUserId", async (req) => {
-    const { USERID } = req.data;
+ const { AllRequest } = srv.entities;
 
-    return await SELECT.from("EmployeeService.AllRequest")
-      .where({ USRID: USERID });
-  });
+srv.on("getRequestsByUserId", async (req) => {
+  const { USERID } = req.data;
+
+  return await cds.run(
+    SELECT.from(AllRequest).where({ USRID: USERID })
+  );
+});
 
   srv.on("getAssetByAssetId", async (req) => {
     const { ASSTID } = req.data;

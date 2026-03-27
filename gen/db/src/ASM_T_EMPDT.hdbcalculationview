@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ASM_T_EMPDT" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS" mdsCubeConversionExecution="AT_LOADING_TIME">
+<descriptions defaultDescription="AST_T_EMPDT"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ASM_M_DEPDT">
+    <resourceUri>ASM_M_DEPDT</resourceUri>
+  </DataSource>
+  <DataSource id="ASM_M_ROLED">
+    <resourceUri>ASM_M_ROLED</resourceUri>
+  </DataSource>
+  <DataSource id="ASM_M_USEDT">
+    <resourceUri>ASM_M_USEDT</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="DEPID"/>
+      <viewAttribute id="DNAME"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_M_DEPDT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+    <viewAttributes>
+      <viewAttribute id="ROLD"/>
+      <viewAttribute id="ROLNM"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_M_ROLED"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+    <viewAttributes>
+      <viewAttribute id="USRID"/>
+      <viewAttribute id="NAME"/>
+      <viewAttribute id="DEPID"/>
+      <viewAttribute id="ROLID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_M_USEDT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="CN_N" joinType="rightOuter" multiJoinNode="Join_1" multiJoinCentralTable="Projection_1" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="USRID" aggregationType="sum"/>
+      <viewAttribute id="NAME"/>
+      <viewAttribute id="ROLNM"/>
+      <viewAttribute id="DEPID" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$ROLD$ROLID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Projection_2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ROLNM" source="ROLNM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ROLD$ROLID" source="ROLD"/>
+    </input>
+    <input node="Projection_3">
+      <mapping xsi:type="Calculation:AttributeMapping" target="USRID" source="USRID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NAME" source="NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DEPID" source="DEPID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ROLD$ROLID" source="ROLID"/>
+    </input>
+    <joinAttribute name="JOIN$ROLD$ROLID"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="CN_N" joinType="rightOuter" multiJoinNode="Join_1" multiJoinCentralTable="Projection_1" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="USRID" aggregationType="sum"/>
+      <viewAttribute id="NAME"/>
+      <viewAttribute id="ROLNM"/>
+      <viewAttribute id="DEPID" aggregationType="sum"/>
+      <viewAttribute id="DNAME"/>
+      <viewAttribute hidden="true" id="JOIN$DEPID$DEPID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Projection_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="DNAME" source="DNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$DEPID$DEPID" source="DEPID"/>
+    </input>
+    <input node="Join_1_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="USRID" source="USRID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NAME" source="NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ROLNM" source="ROLNM"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DEPID" source="DEPID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$DEPID$DEPID" source="DEPID"/>
+    </input>
+    <joinAttribute name="JOIN$DEPID$DEPID"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Join_1_2">
+  <attributes>
+    <attribute id="NAME" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Full Name"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="NAME"/>
+    </attribute>
+    <attribute id="ROLNM" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="role name"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="ROLNM"/>
+    </attribute>
+    <attribute id="DNAME" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DEPARTMENT name"/>
+      <keyMapping columnObjectName="Join_1_2" columnName="DNAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="USRID" order="1" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="User ID"/>
+      <measureMapping columnObjectName="Join_1_2" columnName="USRID"/>
+      <exceptionAggregationMetadata/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-140" y="283"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="82" y="363"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="314" y="273"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="82" y="208"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Projection_1" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="27" y="20"/>
+      <rectangleSize width="145"/>
+    </shape>
+    <shape modelObjectName="Projection_2" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="199" y="174"/>
+      <rectangleSize width="145"/>
+    </shape>
+    <shape modelObjectName="Projection_3" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="291" y="17"/>
+      <rectangleSize width="140"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

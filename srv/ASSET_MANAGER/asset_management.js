@@ -45,7 +45,7 @@ srv.on('insertAsset', async (req) => {
   const userId = Number(req.user?.id) || 2001;
 
   const {
-    P_ASTID,
+   
     P_ASTNAME,
     P_CATID,
     P_SUBCATID,
@@ -53,16 +53,17 @@ srv.on('insertAsset', async (req) => {
   } = req.data;
 
   await cds.run(
-    `CALL insert_asset(?, ?, ?, ?, ?, ?)`,
-    [
-      String(P_ASTID),
-      P_ASTNAME,
-      String(P_CATID),
-      String(P_SUBCATID),
-      String(P_QTY),
-      userId
-    ]
-  );
+   
+  `CALL insert_asset(?, ?, ?, ?, ?)`,
+  [
+    P_ASTNAME,
+    P_CATID,
+    P_SUBCATID,
+    Number(P_QTY),
+    userId
+  ]
+);
+  
 
   return 'Asset Inserted';
 });

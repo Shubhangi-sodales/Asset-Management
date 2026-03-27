@@ -1,0 +1,6 @@
+VIEW EmployeeService_empreq AS SELECT
+  EAS_0.USRID,
+  EAS_0.REQID,
+  EAS_0.CNAME,
+  EAS_0.STAT
+FROM ASM_T_EAS AS EAS_0

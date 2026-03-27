@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ASM_T_MGASG" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS" mdsCubeConversionExecution="AT_LOADING_TIME">
+<descriptions defaultDescription="AST_M_MGASG"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ASM_M_USEDT">
+    <resourceUri>ASM_M_USEDT</resourceUri>
+  </DataSource>
+  <DataSource id="ASM_M_ASCAT">
+    <resourceUri>ASM_M_ASCAT</resourceUri>
+  </DataSource>
+  <DataSource id="ASM_T_ASSET">
+    <resourceUri>ASM_T_ASSET</resourceUri>
+  </DataSource>
+  <DataSource id="ASM_T_ASAMT">
+    <resourceUri>ASM_T_ASAMT</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="USRID"/>
+      <viewAttribute id="NAME"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_M_USEDT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+    <viewAttributes>
+      <viewAttribute id="CATID"/>
+      <viewAttribute id="CNAME"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_M_ASCAT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+    <viewAttributes>
+      <viewAttribute id="ASTID"/>
+      <viewAttribute id="ASTNAME"/>
+      <viewAttribute id="CATID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_T_ASSET"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+    <viewAttributes>
+      <viewAttribute id="ASTID"/>
+      <viewAttribute id="USRID"/>
+      <viewAttribute id="ASDAT"/>
+      <viewAttribute id="STAT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_T_ASAMT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_1" cardinality="CN_N" joinType="rightOuter" multiJoinNode="Join_1" multiJoinCentralTable="Projection_1" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CNAME"/>
+      <viewAttribute id="ASTID"/>
+      <viewAttribute id="ASTNAME"/>
+      <viewAttribute hidden="true" id="JOIN$CATID$CATID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Projection_2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CNAME" source="CNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CATID$CATID" source="CATID"/>
+    </input>
+    <input node="Projection_3">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASTID" source="ASTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASTNAME" source="ASTNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CATID$CATID" source="CATID"/>
+    </input>
+    <joinAttribute name="JOIN$CATID$CATID"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_2" cardinality="CN_N" joinType="rightOuter" multiJoinNode="Join_1" multiJoinCentralTable="Projection_1" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CNAME"/>
+      <viewAttribute id="ASTID"/>
+      <viewAttribute id="ASTNAME"/>
+      <viewAttribute id="ASDAT" aggregationType="min"/>
+      <viewAttribute id="STAT" aggregationType="sum"/>
+      <viewAttribute id="USRID" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$ASTID$ASTID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Join_1_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CNAME" source="CNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASTID" source="ASTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASTNAME" source="ASTNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ASTID$ASTID" source="ASTID"/>
+    </input>
+    <input node="Projection_4">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASDAT" source="ASDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USRID" source="USRID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ASTID$ASTID" source="ASTID"/>
+    </input>
+    <joinAttribute name="JOIN$ASTID$ASTID"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1_3" cardinality="CN_N" joinType="rightOuter" multiJoinNode="Join_1" multiJoinCentralTable="Projection_1" multiJoinOrder="Outside In">
+    <viewAttributes>
+      <viewAttribute id="CNAME"/>
+      <viewAttribute id="ASTID"/>
+      <viewAttribute id="ASTNAME"/>
+      <viewAttribute id="ASDAT" aggregationType="min"/>
+      <viewAttribute id="STAT" aggregationType="sum"/>
+      <viewAttribute id="USRID" aggregationType="sum"/>
+      <viewAttribute id="NAME"/>
+      <viewAttribute hidden="true" id="JOIN$USRID$USRID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Projection_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="USRID" source="USRID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NAME" source="NAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$USRID$USRID" source="USRID"/>
+    </input>
+    <input node="Join_1_2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CNAME" source="CNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASTID" source="ASTID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASTNAME" source="ASTNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASDAT" source="ASDAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$USRID$USRID" source="USRID"/>
+    </input>
+    <joinAttribute name="JOIN$USRID$USRID"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Join_1_3">
+  <attributes>
+    <attribute id="NAME" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Full Name"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="NAME"/>
+    </attribute>
+    <attribute id="CNAME" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Category Name"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="CNAME"/>
+    </attribute>
+    <attribute id="ASTID" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ASSET ID"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="ASTID"/>
+    </attribute>
+    <attribute id="ASTNAME" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Asset Name"/>
+      <keyMapping columnObjectName="Join_1_3" columnName="ASTNAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="USRID" order="1" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="User ID"/>
+      <measureMapping columnObjectName="Join_1_3" columnName="USRID"/>
+      <exceptionAggregationMetadata/>
+    </measure>
+    <measure id="ASDAT" order="6" aggregationType="min" measureType="simple">
+      <descriptions defaultDescription="Assigned Date"/>
+      <measureMapping columnObjectName="Join_1_3" columnName="ASDAT"/>
+      <exceptionAggregationMetadata/>
+    </measure>
+    <measure id="STAT" order="7" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="Status"/>
+      <measureMapping columnObjectName="Join_1_3" columnName="STAT"/>
+      <exceptionAggregationMetadata/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-237" y="376"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-20" y="404"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="239" y="421"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="419" y="366"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="239"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Projection_1" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="-289" y="236"/>
+      <rectangleSize width="140"/>
+    </shape>
+    <shape modelObjectName="Projection_4" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="-17" y="197"/>
+      <rectangleSize width="141"/>
+    </shape>
+  
+    <shape modelObjectName="Projection_2" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="-50" y="392"/>
+      <rectangleSize width="145"/>
+    </shape>
+    <shape modelObjectName="Projection_3" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput" multiJoinViewNodeName="Join_1">
+      <upperLeftCorner x="206" y="282"/>
+      <rectangleSize width="159"/>
+    </shape></shapes>
+</layout>
+</Calculation:scenario>

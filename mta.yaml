@@ -17,6 +17,7 @@ modules:
     parameters:
       instances: 1
       buildpack: nodejs_buildpack
+      memory: 128M
     build-parameters:
       builder: npm-ci
     provides:
@@ -32,6 +33,7 @@ modules:
     path: gen/db
     parameters:
       buildpack: nodejs_buildpack
+      memory: 128M
     requires:
       - name: asset_management-db
 
@@ -48,7 +50,7 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: asset_management-${org}-${space}
+        xsappname: asset_management-Sodales-Training
         tenant-mode: dedicated
         oauth2-configuration:
           credential-types:
