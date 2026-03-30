@@ -1,0 +1,106 @@
+PROCEDURE prinsertupdateasset (
+    IN P_ASTID        NVARCHAR(30),   
+    IN P_ASTNAME      NVARCHAR(100),
+    IN P_CATID        NVARCHAR(30),
+    IN P_SUBCATID     NVARCHAR(30),
+    IN P_QTY          INTEGER,
+    IN P_USER         INTEGER,
+    IN P_SERIALNO     NVARCHAR(50),
+    IN P_PURCHASEDATE DATE
+)
+LANGUAGE SQLSCRIPT
+AS
+BEGIN
+    DECLARE V_ROLE NVARCHAR(50);
+    DECLARE V_MAX_NUM INTEGER;
+    DECLARE V_NEW_ID NVARCHAR(30);
+
+    
+   
+    SELECT R.ROLNM 
+    INTO V_ROLE
+    FROM "ASM_M_USEDT" U
+    JOIN "ASM_M_ROLED" R
+        ON U.ROLID = R.ROLD
+    WHERE U.USRID = :P_USER;
+
+    IF :V_ROLE IS NULL THEN
+        SIGNAL SQL_ERROR_CODE 10020
+        SET MESSAGE_TEXT = 'User not found';
+    END IF;
+
+    IF :V_ROLE <> 'asset_manager' THEN
+        SIGNAL SQL_ERROR_CODE 10021
+        SET MESSAGE_TEXT = 'Unauthorized';
+    END IF;
+
+
+    IF :P_ASTID IS NOT NULL THEN
+
+        UPDATE "ASM_T_ASSET"
+        SET 
+            ASTNAME = :P_ASTNAME,
+            CATID = :P_CATID,
+            SUBCATID = :P_SUBCATID,
+            ASTQT = :P_QTY,
+            SERIALNO = :P_SERIALNO,
+            PURCHASEDATE = :P_PURCHASEDATE,
+            ASTST = CASE 
+                        WHEN :P_QTY <= 0 THEN 'OUT_OF_STOCK'
+                        ELSE 'AVAILABLE'
+                    END,
+            CHNDT = CURRENT_DATE,
+            CHNTM = CURRENT_TIME,
+            CHNBY = :P_USER
+        WHERE ASTID = :P_ASTID;
+
+   
+    ELSE
+
+        -- Generate new ASTID
+        SELECT IFNULL(MAX(
+            CASE 
+                WHEN ASTID LIKE 'A%' 
+                THEN TO_INTEGER(SUBSTRING(ASTID, 2))
+            END
+        ), 0)
+        INTO V_MAX_NUM
+        FROM "ASM_T_ASSET";
+
+        V_NEW_ID := 'A' || LPAD(:V_MAX_NUM + 1, 3, '0');
+
+        INSERT INTO "ASM_T_ASSET" (
+            ASTID,
+            ASTNAME,
+            CATID,
+            SUBCATID,
+            SERIALNO,
+            ASTST,
+            PURCHASEDATE,
+            ASTQT,
+            ISDEL,
+            CRTDT,
+            CRTTM,
+            CRTBY
+        )
+        VALUES (
+            :V_NEW_ID,
+            :P_ASTNAME,
+            :P_CATID,
+            :P_SUBCATID,
+            :P_SERIALNO,
+            CASE 
+                WHEN :P_QTY <= 0 THEN 'OUT_OF_STOCK'
+                ELSE 'AVAILABLE'
+            END,
+            :P_PURCHASEDATE,
+            :P_QTY,
+            '0',
+            CURRENT_DATE,
+            CURRENT_TIME,
+            :P_USER
+        );
+
+    END IF;
+
+END;

@@ -33,6 +33,7 @@
           <Parameter Name="ASTID" Type="Edm.String" Mode="In" Nullable="true"/>
         </FunctionImport>
         <FunctionImport Name="insertAsset" m:HttpMethod="POST">
+          <Parameter Name="P_ASTID" Type="Edm.String" Mode="In" Nullable="true"/>
           <Parameter Name="P_ASTNAME" Type="Edm.String" Mode="In" Nullable="true"/>
           <Parameter Name="P_CATID" Type="Edm.String" Mode="In" Nullable="true"/>
           <Parameter Name="P_SUBCATID" Type="Edm.String" Mode="In" Nullable="true"/>

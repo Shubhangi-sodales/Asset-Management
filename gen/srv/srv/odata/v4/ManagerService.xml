@@ -143,6 +143,7 @@
         <ReturnType Type="Edm.String"/>
       </Action>
       <Action Name="insertAsset" IsBound="false">
+        <Parameter Name="P_ASTID" Type="Edm.String"/>
         <Parameter Name="P_ASTNAME" Type="Edm.String"/>
         <Parameter Name="P_CATID" Type="Edm.String"/>
         <Parameter Name="P_SUBCATID" Type="Edm.String"/>

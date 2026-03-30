@@ -60,6 +60,7 @@ entity userdetail as projection on db.M.USERVIEW;
     ) returns String;
 
     action insertAsset (
+    P_ASTID        : String,
     P_ASTNAME      : String,
     P_CATID        : String,
     P_SUBCATID     : String,
