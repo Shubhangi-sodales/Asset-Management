@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ASM_T_NOTIFICATIONVIEW" applyPrivilegeType="NONE" dataCategory="DIMENSION" schemaVersion="3.0" hierarchyGeneration="SQL" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="true" application="BAS">
+<descriptions defaultDescription="ASM_T_NOTIFICATIONVIEW"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ASM_T_NOTDT">
+    <resourceUri>ASM_T_NOTDT</resourceUri>
+  </DataSource>
+</dataSources>
+<snapshotProcedures/>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="ANTID"/>
+      <viewAttribute id="NTFID"/>
+      <viewAttribute id="USRID"/>
+      <viewAttribute id="MSG"/>
+      <viewAttribute id="ISRED"/>
+      <viewAttribute id="ISDEL"/>
+      <viewAttribute id="CRTDT"/>
+      <viewAttribute id="NOTYPE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="ASM_T_NOTDT"/>
+  </calculationView>
+</calculationViews>
+
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="ANTID" order="1">
+      <descriptions defaultDescription="Unique ID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ANTID"/>
+    </attribute>
+    <attribute id="NTFID" order="2">
+      <descriptions defaultDescription="Notification ID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="NTFID"/>
+    </attribute>
+    <attribute id="USRID" order="3">
+      <descriptions defaultDescription="User ID"/>
+      <keyMapping columnObjectName="Projection_1" columnName="USRID"/>
+    </attribute>
+    <attribute id="MSG" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Message"/>
+      <keyMapping columnObjectName="Projection_1" columnName="MSG"/>
+    </attribute>
+    <attribute id="ISRED" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Is Read"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ISRED"/>
+    </attribute>
+    <attribute id="ISDEL" order="6" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Is Deleted Flag"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ISDEL"/>
+    </attribute>
+    <attribute id="CRTDT" order="7" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Created Date"/>
+      <keyMapping columnObjectName="Projection_1" columnName="CRTDT"/>
+    </attribute>
+    <attribute id="NOTYPE" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Type"/>
+      <keyMapping columnObjectName="Projection_1" columnName="NOTYPE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures/>
+  <calculatedMeasures/>
+  <restrictedMeasures/></logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="false" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="100" y="105"/>
+    
+      <rectangleSize width="160"/>
+    </shape>
+    
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="110" y="205"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

@@ -1,13 +1,17 @@
-import { assignAsset, approveRequest, insertAsset } from '../handler/test.js';
+import { assignAsset, approveRequest, insertAsset, getMyNotifications, markNotificationRead } from '../handler/test.js';
 
 export default (srv) => {
 
-  srv.before('READ', 'AllRequest', (req) => {
-    
-  });
+    // Optional: before hooks
+    srv.before('READ', 'AllRequest', (req) => {
+        // add any preprocessing if needed
+    });
 
-  srv.on('AssignAsset', assignAsset);
-  srv.on('ApproveRequest', approveRequest);
-  srv.on('insertAsset', insertAsset);
+    // Actions mapped to handler functions
+    srv.on('AssignAsset', assignAsset);
+    srv.on('ApproveRequest', approveRequest);
+    srv.on('insertAsset', insertAsset);
+    srv.on('getMyNotifications', getMyNotifications);
+    srv.on('markNotificationRead', markNotificationRead);
 
 };

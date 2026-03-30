@@ -1,16 +1,92 @@
 const cds = require('@sap/cds');
 
-async function createRequest(req) {
-    try {
-        const { USERID, CATID, ASTID, SCTID, PRITY } = req.data;
-        const userId = parseInt(USERID);
+function toStr(value) {
+    return value == null ? '' : String(value);
+}
 
-        const result = await cds.run(
+/* ================== AUDIT LOG ================== */
+async function logAudit(tx, userId, action, entity, enid, newData = {}) {
+    try {
+        await tx.run(
+            `INSERT INTO ASM_T_AULOG
+            (USRID, ACTN, ENAME, ENID, TSTMP, OLDV, NEWV, ISDEL, CRTDT, CRTTM, CRTBY)
+            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
+            [
+                Number(userId),
+                toStr(action),
+                toStr(entity),
+                enid ? Number(enid) : 0,
+                '',
+                JSON.stringify(newData || {}),
+                'N',
+                toStr(userId)
+            ]
+        );
+    } catch (e) {
+        console.error("Audit log failed:", e);
+    }
+}
+
+/* ================== ERROR LOG ================== */
+async function logError(userId, err) {
+    try {
+        await cds.run(
+            `INSERT INTO ASM_T_ERRLOG
+            (ERRMS, ERRST, STCOD, ISDEL, CRTDT, CRTTM, CRTBY)
+            VALUES (?, ?, ?, 0, CURRENT_DATE, CURRENT_TIME, ?)`,
+            [
+                toStr(err.message),
+                toStr(err.stack),
+                Number(err.code) || 500,
+                toStr(userId)
+            ]
+        );
+    } catch (e) {
+        console.error("Error log failed:", e);
+    }
+}
+
+/* ================== CREATE REQUEST ================== */
+async function createRequest(req) {
+    const userId = Number(req.data.USERID);
+    const tx = cds.tx(req);
+
+    try {
+        const result = await tx.run(
             `CALL prinsertupdaterequest(?,?,?,?,?,?)`,
-            ['0', userId, PRITY, CATID, ASTID, SCTID]
+            ['0', userId, req.data.PRITY, req.data.CATID, req.data.ASTID, req.data.SCTID]
         );
 
         const row = result?.[0];
+
+        // Notifications
+        const managers = await tx.run(`
+            SELECT U.USRID 
+            FROM ASM_M_USEDT U
+            JOIN ASM_M_ROLED R ON U.ROLID = R.ROLD
+            WHERE R.ROLNM = 'employee'
+        `);
+
+        for (let manager of managers) {
+            await tx.run(
+                `INSERT INTO ASM_T_NOTDT
+                (NTFID, USRID, MSG, NOTYPE, ISRED, ISDEL, CRTDT, CRTTM, CRTBY)
+                VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
+                [
+                    null,
+                    userId,
+                    `New request ${row?.REQCODE} created by user ${userId}`,
+                    'NEW_REQUEST',
+                    false,
+                    'N',
+                    toStr(userId)
+                ]
+            );
+        }
+
+        await logAudit(tx, userId, 'CREATE_REQUEST', 'ASM_T_ASREQ', row?.REQCODE, req.data);
+
+        await tx.commit();
 
         return {
             REQCODE: row?.REQCODE,
@@ -20,96 +96,240 @@ async function createRequest(req) {
 
     } catch (err) {
         console.error(err);
-        req.error(500, err.message);
+        await logError(userId, err);
+        return req.error(500, err.message);
     }
 }
 
+/* ================== GET REQUESTS ================== */
 async function getRequestsByUserId(req, AllRequest) {
+    const userId = Number(req.data.USERID || 2001);
+
     try {
-        const { USERID } = req.data;
         return await cds.run(
-            SELECT.from(AllRequest).where({ USRID: USERID })
+            SELECT.from(AllRequest).where({ USRID: userId })
         );
     } catch (err) {
         console.error(err);
+        await logError(userId, err);
         req.error(500, err.message);
     }
 }
 
+/* ================== GET ASSET ================== */
 async function getAssetByAssetId(req) {
+    const userId = Number(req.user?.id || 2001);
+
     try {
-        const { ASSTID } = req.data;
         return await cds.run(
-            SELECT.from("EmployeeService.AllAsset").where({ ASTID: ASSTID })
+            SELECT.from("EmployeeService.AllAsset")
+                .where({ ASTID: toStr(req.data.ASSTID) })
         );
     } catch (err) {
         console.error(err);
+        await logError(userId, err);
         req.error(500, err.message);
     }
 }
 
+/* ================== ASSIGN ASSET ================== */
 async function assignAsset(req) {
+    const userId = Number(req.user?.id || 2001);
+    const tx = cds.tx(req);
+
     try {
-        const userId = Number(req.user?.id) || 2001;
         const { REQID, ASTID } = req.data;
 
-        await cds.run(
+        await tx.run(
             `CALL prinsertupdateassignasset(?, ?, ?)`,
-            [String(REQID), String(ASTID), userId]
+            [Number(REQID), Number(ASTID), userId]
         );
 
-        return { Success: "Asset Assigned" };
-    } catch (err) {
-        console.error(err);
-        req.error(500, err.message);
-    }
-}
-
-async function approveRequest(req) {
-    try {
-        const userId = Number(req.user?.id) || 2001;
-        const { REQID, STATUS } = req.data;
-
-        await cds.run(
-            `CALL prinserupdateassetapproverequest(?, ?, ?)`,
-            [String(REQID), Number(STATUS), userId]
+        const reqData = await tx.run(
+            SELECT.one.from("ASM_T_ASREQ").where({ REQID: Number(REQID) })
         );
 
-        return { Success: "Request Updated" };
-    } catch (err) {
-        console.error(err);
-        req.error(500, err.message);
-    }
-}
-
-async function insertAsset(req) {
-    try {
-        let userId = 2001;
-        if (!isNaN(Number(req.user?.id))) {
-            userId = Number(req.user.id);
+        if (reqData?.USRID) {
+            await tx.run(
+                `INSERT INTO ASM_T_NOTDT
+                (NTFID, USRID, MSG, NOTYPE, ISRED, ISDEL, CRTDT, CRTTM, CRTBY)
+                VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
+                [
+                    null,
+                    Number(reqData.USRID),
+                    `Asset ${ASTID} assigned successfully`,
+                    'ASSET_ASSIGN',
+                    false,
+                    'N',
+                    toStr(userId)
+                ]
+            );
         }
 
-        const {
-            P_ASTID, P_ASTNAME, P_CATID, P_SUBCATID, P_QTY, P_SERIALNO, P_PURCHASEDATE
-        } = req.data;
+        await logAudit(tx, userId, 'ASSIGN_ASSET', 'ASM_T_ASREQ', REQID, req.data);
 
-        await cds.run(
+        await tx.commit();
+
+        return { Success: "Asset Assigned & Notification Sent" };
+
+    } catch (err) {
+        console.error(err);
+        await logError(userId, err);
+        return req.error(500, err.message);
+    }
+}
+
+/* ================== APPROVE REQUEST ================== */
+async function approveRequest(req) {
+    const userId = Number(req.user?.id || 2001);
+    const tx = cds.tx(req);
+
+    try {
+        const { REQID, STATUS } = req.data;
+
+        await tx.run(
+            `CALL prinserupdateassetapproverequest(?, ?, ?)`,
+            [Number(REQID), Number(STATUS), userId]
+        );
+
+        const reqData = await tx.run(
+            SELECT.one.from("ASM_T_ASREQ").where({ REQID: Number(REQID) })
+        );
+
+        if (reqData?.USRID) {
+            let message =
+                STATUS === 1 ? `Your request ${REQID} has been APPROVED` :
+                STATUS === 2 ? `Your request ${REQID} has been REJECTED` :
+                `Your request ${REQID} status updated`;
+
+            await tx.run(
+                `INSERT INTO ASM_T_NOTDT
+                (NTFID, USRID, MSG, NOTYPE, ISRED, ISDEL, CRTDT, CRTTM, CRTBY)
+                VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
+                [
+                    null,
+                    Number(reqData.USRID),
+                    message,
+                    'REQUEST_STATUS',
+                    false,
+                    'N',
+                    toStr(userId)
+                ]
+            );
+        }
+
+        await logAudit(tx, userId, 'APPROVE_REQUEST', 'ASM_T_ASREQ', REQID, req.data);
+
+        await tx.commit();
+
+        return { Success: "Request Updated & Notification Sent" };
+
+    } catch (err) {
+        console.error(err);
+        await logError(userId, err);
+        return req.error(500, err.message);
+    }
+}
+
+/* ================== INSERT ASSET ================== */
+async function insertAsset(req) {
+    const userId = Number(req.user?.id || 2001);
+    const tx = cds.tx(req);
+
+    try {
+        const { P_ASTID, P_ASTNAME, P_CATID, P_SUBCATID, P_QTY, P_SERIALNO, P_PURCHASEDATE } = req.data;
+
+        await tx.run(
             `CALL prinsertupdateasset(?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                P_ASTID,
-                P_ASTNAME,
-                P_CATID,
-                P_SUBCATID,
+                toStr(P_ASTID),
+                toStr(P_ASTNAME),
+                toStr(P_CATID),
+                toStr(P_SUBCATID),
                 Number(P_QTY),
                 userId,
-                P_SERIALNO,
+                toStr(P_SERIALNO),
                 P_PURCHASEDATE
             ]
         );
 
-        return { Success: "Asset Saved Successfully" };
+        await tx.run(
+            `INSERT INTO ASM_T_NOTDT
+            (NTFID, USRID, MSG, NOTYPE, ISRED, ISDEL, CRTDT, CRTTM, CRTBY)
+            VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
+            [
+                null,
+                userId,
+                `Asset ${P_ASTNAME} (${P_ASTID}) saved successfully`,
+                'ASSET_INSERT',
+                false,
+                'N',
+                toStr(userId)
+            ]
+        );
+
+        await logAudit(tx, userId, 'INSERT_ASSET', 'ASM_T_ASSET', P_ASTID, req.data);
+
+        await tx.commit();
+
+        return { Success: "Asset Saved & Notification Sent" };
+
     } catch (err) {
         console.error(err);
+        await logError(userId, err);
+        return req.error(500, err.message);
+    }
+}
+
+/* ================== MARK NOTIFICATION READ ================== */
+async function markNotificationRead(req) {
+    const userId = Number(req.user?.id || 2001);
+    const tx = cds.tx(req);
+
+    try {
+        let { ANTID } = req.data;
+        ANTID = Number(ANTID);
+
+        if (ANTID == null || isNaN(ANTID)) {
+            return req.error(400, "Invalid ANTID");
+        }
+
+        await tx.run(
+            `UPDATE ASM_T_NOTDT
+             SET ISRED = true,
+                 CHNDT = CURRENT_DATE,
+                 CHNTM = CURRENT_TIME,
+                 CHNBY = ?
+             WHERE ANTID = ?`,
+            [String(userId), ANTID] // ✅ convert to string
+        );
+
+        await logAudit(tx, userId, 'READ_NOTIFICATION', 'ASM_T_NOTDT', ANTID, req.data);
+
+        await tx.commit();
+
+        return { Success: "Notification marked as read" };
+
+    } catch (err) {
+        console.error(err);
+        await logError(userId, err);
+        return req.error(500, err.message);
+    }
+}
+/* ================== GET NOTIFICATIONS ================== */
+async function getMyNotifications(req) {
+    const userId = Number(req.user?.id || 2001);
+
+    try {
+        return await cds.run(
+            SELECT.from("ASM_T_NOTDT")
+                .columns(['NTFID', 'MSG', 'NOTYPE', 'ISRED', 'CRTDT', 'CRTTM'])
+                .where({ USRID: userId, ISDEL: 'N' })
+                .orderBy([{ ref: ['CRTDT'], sort: 'desc' }, { ref: ['CRTTM'], sort: 'desc' }])
+        );
+    } catch (err) {
+        console.error(err);
+        await logError(userId, err);
         req.error(500, err.message);
     }
 }
@@ -120,5 +340,7 @@ module.exports = {
     getAssetByAssetId,
     assignAsset,
     approveRequest,
-    insertAsset
+    insertAsset,
+    markNotificationRead,
+    getMyNotifications
 };

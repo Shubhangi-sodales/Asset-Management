@@ -13,9 +13,7 @@ BEGIN
     DECLARE V_AST_QTY INTEGER;
     DECLARE V_ASSIGN_COUNT INTEGER;
 
-    --------------------------------------------------
-    -- 1. CHECK REQUEST EXISTS
-    --------------------------------------------------
+   
     SELECT COUNT(*) INTO V_REQ_COUNT
     FROM "ASM_T_ASREQ"
     WHERE REQID = :P_REQID;
@@ -25,16 +23,12 @@ BEGIN
         SET MESSAGE_TEXT = 'Request not found';
     END IF;
 
-    --------------------------------------------------
-    -- 2. GET USER FROM REQUEST
-    --------------------------------------------------
+    
     SELECT USRID INTO V_USRID
     FROM "ASM_T_ASREQ"
     WHERE REQID = :P_REQID;
 
-    --------------------------------------------------
-    -- 3. GET ASSET DETAILS
-    --------------------------------------------------
+   
     SELECT ASTQT, ASTST 
     INTO V_AST_QTY, V_AST_STATUS
     FROM "ASM_T_ASSET"
@@ -45,17 +39,13 @@ BEGIN
         SET MESSAGE_TEXT = 'Asset not found';
     END IF;
 
-    --------------------------------------------------
-    -- 4. CHECK ASSET AVAILABILITY
-    --------------------------------------------------
+   
     IF :V_AST_QTY <= 0 OR :V_AST_STATUS <> 'AVAILABLE' THEN
         SIGNAL SQL_ERROR_CODE 10003
         SET MESSAGE_TEXT = 'Asset not available';
     END IF;
 
-    --------------------------------------------------
-    -- 5. CHECK MAX 3 ASSETS PER USER (SAME ASTID)
-    --------------------------------------------------
+  
     SELECT COUNT(*) INTO V_ASSIGN_COUNT
     FROM "ASM_T_ASAMT"
     WHERE ASTID = :P_ASTID
@@ -67,9 +57,7 @@ BEGIN
         SET MESSAGE_TEXT = 'User already has maximum 3 assets of this type';
     END IF;
 
-    --------------------------------------------------
-    -- 6. ASSIGN ASSET
-    --------------------------------------------------
+    
     INSERT INTO "ASM_T_ASAMT" (
         ASTID,
         USRID,
@@ -91,16 +79,12 @@ BEGIN
         'SYSTEM'
     );
 
-    --------------------------------------------------
-    -- 7. UPDATE REQUEST STATUS → ASSIGNED
-    --------------------------------------------------
+    
     UPDATE "ASM_T_ASREQ"
     SET STAT = 3
     WHERE REQID = :P_REQID;
 
-    --------------------------------------------------
-    -- 8. UPDATE ASSET QUANTITY
-    --------------------------------------------------
+   
     UPDATE "ASM_T_ASSET"
     SET 
         ASTQT = ASTQT - 1,

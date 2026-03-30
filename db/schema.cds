@@ -171,6 +171,17 @@ context T {
                     ASDAT   : Timestamp   @title: 'ASDAT: Assigned Date';
                     STAT    : Integer     @title: 'STAT: Status';
         }
-
+        @cds.persistence.exists 
+        @cds.persistence.calcview 
+        Entity NOTIFICATIONVIEW {
+        key     ANTID: Integer64  @title: 'ANTID: Unique ID' ; 
+                NTFID: Integer  @title: 'NTFID: Notification ID' ; 
+                USRID: Integer  @title: 'USRID: User ID' ; 
+                MSG: String(5000)  @title: 'MSG: Message' ; 
+                ISRED: Boolean  @title: 'ISRED: Is Read' ; 
+                ISDEL: String(1)  @title: 'ISDEL: Is Deleted Flag' ; 
+                CRTDT: Date  @title: 'CRTDT: Created Date' ; 
+                NOTYPE: String(50)  @title: 'NOTYPE: Type' ; 
+        }
 
 }

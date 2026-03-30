@@ -103,7 +103,9 @@
   
     <attribute id="STAT" order="4" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="Status"/>
+  
       <keyMapping columnObjectName="Join_1_2" columnName="STAT"/>
+  
     </attribute>
   </attributes>
   <calculatedAttributes/>
