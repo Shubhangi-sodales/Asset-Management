@@ -142,11 +142,11 @@ async function assignAsset(req) {
 
         await tx.run(
             `CALL prinsertupdateassignasset(?, ?, ?)`,
-            [Number(REQID), Number(ASTID), userId]
+            [String(REQID), String(ASTID), 2001]
         );
 
         const reqData = await tx.run(
-            SELECT.one.from("ASM_T_ASREQ").where({ REQID: Number(REQID) })
+            SELECT.one.from("ASM_T_ASREQ").where({ REQID: String(REQID) })
         );
 
         if (reqData?.USRID) {
@@ -156,7 +156,7 @@ async function assignAsset(req) {
                 VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
                 [
                     null,
-                    Number(reqData.USRID),
+                    2001,
                     `Asset ${ASTID} assigned successfully`,
                     'ASSET_ASSIGN',
                     false,
@@ -166,7 +166,7 @@ async function assignAsset(req) {
             );
         }
 
-        await logAudit(tx, userId, 'ASSIGN_ASSET', 'ASM_T_ASREQ', REQID, req.data);
+        await logAudit(tx, 2001, 'ASSIGN_ASSET', 'ASM_T_ASREQ', Number(REQID), req.data);
 
         await tx.commit();
 
@@ -188,11 +188,11 @@ async function approveRequest(req) {
 
         await tx.run(
             `CALL prinserupdateassetapproverequest(?, ?, ?)`,
-            [Number(REQID), Number(STATUS), userId]
+            [String(REQID), Number(STATUS), 2001]
         );
 
         const reqData = await tx.run(
-            SELECT.one.from("ASM_T_ASREQ").where({ REQID: Number(REQID) })
+            SELECT.one.from("ASM_T_ASREQ").where({ REQID: String(REQID) })
         );
 
         if (reqData?.USRID) {
@@ -202,26 +202,26 @@ async function approveRequest(req) {
                 `Your request ${REQID} status updated`;
 
             await tx.run(
-                `INSERT INTO ASM_T_NOTDT
-                (NTFID, USRID, MSG, NOTYPE, ISRED, ISDEL, CRTDT, CRTTM, CRTBY)
-                VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
-                [
-                    null,
-                    Number(reqData.USRID),
-                    message,
-                    'REQUEST_STATUS',
-                    false,
-                    'N',
-                    toStr(userId)
-                ]
-            );
-        }
+            `INSERT INTO ASM_T_NOTDT
+            (NTFID, USRID, MSG, NOTYPE, ISRED, ISDEL, CRTDT, CRTTM, CRTBY)
+            VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
+            [
+                null,
+                2001,
+                message,
+                'REQUEST_STATUS',
+                false,
+                '0',
+                toStr(userId)
+            ]
+        );
+    }
 
-        await logAudit(tx, userId, 'APPROVE_REQUEST', 'ASM_T_ASREQ', REQID, req.data);
+        await logAudit(tx, 2001, 'APPROVE_REQUEST', 'ASM_T_ASREQ', Number(REQID), req.data);
 
         await tx.commit();
 
-        return { Success: "Request Updated & Notification Sent" };
+        return { Success: "Request updated & Notification Sent" };
 
     } catch (err) {
         console.error(err);

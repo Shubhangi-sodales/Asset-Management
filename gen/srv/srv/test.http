@@ -46,7 +46,7 @@
     # Content-Type: application/json
 
     # {
-    # "REQID": "REQ_112",
+    # "REQID": "REQ_130",
     # "STATUS": 1
     # }
 
@@ -54,23 +54,23 @@
 # Content-Type: application/json
 
 # {
-#   "REQID": "REQ_125",
+#   "REQID": "REQ_130",
 #   "ASTID": "A058"
 # }
 
-    POST http://localhost:4004/odata/v2/manager/insertAsset
-    Content-Type: application/json
+    # POST http://localhost:4004/odata/v2/manager/insertAsset
+    # Content-Type: application/json
 
-    {
-    "P_ASTID": "null",
-    "P_ASTNAME": "hp11",
-    "P_CATID": "L001",
-    "P_SUBCATID": "S002",
-    "P_QTY": 1,
-    "P_SERIALNO": "SN123456",
-    "P_PURCHASEDATE": "2026-03-27",
-    "P_MANUFACTURER": "Lenovo"
-    }
+    # {
+    # "P_ASTID": null,
+    # "P_ASTNAME": "hp1000",
+    # "P_CATID": "L001",
+    # "P_SUBCATID": "S002",
+    # "P_QTY": 1,
+    # "P_SERIALNO": "SN123456",
+    # "P_PURCHASEDATE": "2026-03-27",
+    # "P_MANUFACTURER": "Lenovo"
+    # }
 
 # POST http://localhost:4004/odata/v4/manager/markNotificationRead
 # Content-Type: application/json
