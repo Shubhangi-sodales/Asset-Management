@@ -1,0 +1,82 @@
+
+# POST http://localhost:4004/odata/v2/employee/CreateRequest
+# Content-Type: application/json
+
+# {
+#   "USERID": 1002,
+#   "CATID": "C001",
+#   "ASTID": "A008",
+#   "SCTID": "SC001",
+#   "PRITY": "High"
+# }
+
+//GET http://localhost:4004/odata/v2/manager/AllAsset
+//not used 
+//GET http://localhost:33285/odata/v2/manager/assertreq
+
+//get all request pending status count 
+//GET http://localhost:38603/odata/v2/manager/AllRequest/$count?$filter=STAT eq 0
+
+//GET http://localhost:4004/odata/v2/manager/AllRequest/$count?$filter=STAT eq 3
+//GET http://localhost:4004/odata/v2/employee/empreq?$filter=USRID eq 1002
+
+//GET http://localhost:4004/odata/v2/employee/getRequestsByUserId?USERID=1002
+
+ //GET  http://localhost:4004/odata/v2/manager/subcat?$filter=CATID eq 'C002'
+
+//GET http://localhost:4004/odata/v2/employee/getAssetByAssetId?ASSTID='A010'
+
+//GET http://localhost:4004/odata/v2/employee/profile?$filter=USRID eq 1002
+ 
+//TOTAL ASSETS
+//GET http://localhost:45621/odata/v2/manager/AllAsset/$count
+
+
+//GET http://localhost:4004/odata/v2/manager/astassigned/$count
+
+
+//AVAILABLE ASSET 
+//GET http://localhost:45621/odata/v2/manager/AllAsset?$filter=ASTST eq 'AVAILABLE'
+
+
+//http://localhost:45601/odata/v2/manager/AllRequest?$filter=STAT%20eq%203
+
+
+    # POST http://localhost:4004/odata/v2/manager/ApproveRequest
+    # Content-Type: application/json
+
+    # {
+    # "REQID": "REQ_112",
+    # "STATUS": 1
+    # }
+
+# POST http://localhost:4004/odata/v2/manager/AssignAsset
+# Content-Type: application/json
+
+# {
+#   "REQID": "REQ_125",
+#   "ASTID": "A058"
+# }
+
+    POST http://localhost:4004/odata/v2/manager/insertAsset
+    Content-Type: application/json
+
+    {
+    "P_ASTID": "null",
+    "P_ASTNAME": "hp11",
+    "P_CATID": "L001",
+    "P_SUBCATID": "S002",
+    "P_QTY": 1,
+    "P_SERIALNO": "SN123456",
+    "P_PURCHASEDATE": "2026-03-27",
+    "P_MANUFACTURER": "Lenovo"
+    }
+
+# POST http://localhost:4004/odata/v4/manager/markNotificationRead
+# Content-Type: application/json
+
+# {
+#   "ANTID": 7
+# }
+
+//GET  http://localhost:4004/odata/v2/manager/NOTIFICATION?$filter=ISRED eq false and USRID eq 1002

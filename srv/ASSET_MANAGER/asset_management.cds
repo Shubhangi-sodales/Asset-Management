@@ -2,10 +2,10 @@ using { ASM as db } from '/home/user/projects/asset_management/db/schema.cds';
 
 service ManagerService {
 
-    // User details
+   
     entity userdetail as projection on db.M.USERVIEW;
 
-    // All requests
+   
     entity AllRequest as projection on db.T.ALLREQUESTS {
         ASRID,
         REQID,
@@ -19,7 +19,7 @@ service ManagerService {
         PRITY
     }
 
-    // All assets
+   
     entity AllAsset as projection on db.T.ASSETVIEW {
         ATUID,
         ASTID,
@@ -40,20 +40,20 @@ service ManagerService {
         category.CNAME as CATNAME
     }
 
-    // Categories and subcategories
+    
     entity cate as projection on db.M.ASSETCATGORY;
     entity subcat as projection on db.M.Assetsubcategory;
 
-    // Asset requests
+  
     entity assetreq as projection on db.T.ASTVIEW;
 
-    // Assigned assets
+
     entity astassigned as projection on db.T.MGASG;
 
-    // Notifications
+    
     entity NOTIFICATION as projection on db.T.NOTIFICATIONVIEW;
 
-    // Actions
+
     action ApproveRequest(
         REQID : String,
         STATUS : Integer

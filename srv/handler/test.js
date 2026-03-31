@@ -4,7 +4,7 @@ function toStr(value) {
     return value == null ? '' : String(value);
 }
 
-/* ================== AUDIT LOG ================== */
+
 async function logAudit(tx, userId, action, entity, enid, newData = {}) {
     try {
         await tx.run(
@@ -27,7 +27,7 @@ async function logAudit(tx, userId, action, entity, enid, newData = {}) {
     }
 }
 
-/* ================== ERROR LOG ================== */
+
 async function logError(userId, err) {
     try {
         await cds.run(
@@ -46,7 +46,7 @@ async function logError(userId, err) {
     }
 }
 
-/* ================== CREATE REQUEST ================== */
+
 async function createRequest(req) {
     const userId = Number(req.data.USERID);
     const tx = cds.tx(req);
@@ -59,7 +59,7 @@ async function createRequest(req) {
 
         const row = result?.[0];
 
-        // Notifications
+        
         const managers = await tx.run(`
             SELECT U.USRID 
             FROM ASM_M_USEDT U
@@ -75,7 +75,7 @@ async function createRequest(req) {
                 [
                     null,
                     userId,
-                    `New request ${row?.REQCODE} created by user ${userId}`,
+                    `New request created by user ${userId}`,
                     'NEW_REQUEST',
                     false,
                     'N',
@@ -101,7 +101,7 @@ async function createRequest(req) {
     }
 }
 
-/* ================== GET REQUESTS ================== */
+
 async function getRequestsByUserId(req, AllRequest) {
     const userId = Number(req.data.USERID || 2001);
 
@@ -116,7 +116,7 @@ async function getRequestsByUserId(req, AllRequest) {
     }
 }
 
-/* ================== GET ASSET ================== */
+
 async function getAssetByAssetId(req) {
     const userId = Number(req.user?.id || 2001);
 
@@ -132,7 +132,7 @@ async function getAssetByAssetId(req) {
     }
 }
 
-/* ================== ASSIGN ASSET ================== */
+
 async function assignAsset(req) {
     const userId = Number(req.user?.id || 2001);
     const tx = cds.tx(req);
@@ -179,7 +179,6 @@ async function assignAsset(req) {
     }
 }
 
-/* ================== APPROVE REQUEST ================== */
 async function approveRequest(req) {
     const userId = Number(req.user?.id || 2001);
     const tx = cds.tx(req);
@@ -231,24 +230,25 @@ async function approveRequest(req) {
     }
 }
 
-/* ================== INSERT ASSET ================== */
+
 async function insertAsset(req) {
     const userId = Number(req.user?.id || 2001);
     const tx = cds.tx(req);
 
     try {
+        console.log(req.data);
         const { P_ASTID, P_ASTNAME, P_CATID, P_SUBCATID, P_QTY, P_SERIALNO, P_PURCHASEDATE } = req.data;
 
         await tx.run(
             `CALL prinsertupdateasset(?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                toStr(P_ASTID),
-                toStr(P_ASTNAME),
-                toStr(P_CATID),
-                toStr(P_SUBCATID),
+                P_ASTID,
+                P_ASTNAME,
+                P_CATID,
+                P_SUBCATID,
                 Number(P_QTY),
-                userId,
-                toStr(P_SERIALNO),
+                2001,
+                P_SERIALNO,
                 P_PURCHASEDATE
             ]
         );
@@ -259,7 +259,7 @@ async function insertAsset(req) {
             VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME, ?)`,
             [
                 null,
-                userId,
+                2001,
                 `Asset ${P_ASTNAME} (${P_ASTID}) saved successfully`,
                 'ASSET_INSERT',
                 false,
@@ -268,7 +268,7 @@ async function insertAsset(req) {
             ]
         );
 
-        await logAudit(tx, userId, 'INSERT_ASSET', 'ASM_T_ASSET', P_ASTID, req.data);
+        await logAudit(tx, 2001, 'INSERT_ASSET', 'ASM_T_ASSET', Number(P_ASTID), req.data);
 
         await tx.commit();
 
@@ -281,7 +281,7 @@ async function insertAsset(req) {
     }
 }
 
-/* ================== MARK NOTIFICATION READ ================== */
+
 async function markNotificationRead(req) {
     const userId = Number(req.user?.id || 2001);
     const tx = cds.tx(req);
@@ -301,7 +301,7 @@ async function markNotificationRead(req) {
                  CHNTM = CURRENT_TIME,
                  CHNBY = ?
              WHERE ANTID = ?`,
-            [String(userId), ANTID] // ✅ convert to string
+            [String(userId), ANTID]
         );
 
         await logAudit(tx, userId, 'READ_NOTIFICATION', 'ASM_T_NOTDT', ANTID, req.data);
@@ -316,7 +316,7 @@ async function markNotificationRead(req) {
         return req.error(500, err.message);
     }
 }
-/* ================== GET NOTIFICATIONS ================== */
+
 async function getMyNotifications(req) {
     const userId = Number(req.user?.id || 2001);
 

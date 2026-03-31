@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="ManagerService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Annotation Term="Core.Links">
+        <Collection>
+          <Record>
+            <PropertyValue Property="rel" String="author"/>
+            <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+          </Record>
+        </Collection>
+      </Annotation>
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="userdetail" EntityType="ManagerService.userdetail"/>
+        <EntitySet Name="AllRequest" EntityType="ManagerService.AllRequest"/>
+        <EntitySet Name="AllAsset" EntityType="ManagerService.AllAsset"/>
+        <EntitySet Name="cate" EntityType="ManagerService.cate"/>
+        <EntitySet Name="subcat" EntityType="ManagerService.subcat"/>
+        <EntitySet Name="assetreq" EntityType="ManagerService.assetreq"/>
+        <EntitySet Name="astassigned" EntityType="ManagerService.astassigned"/>
+        <EntitySet Name="NOTIFICATION" EntityType="ManagerService.NOTIFICATION"/>
+        <ActionImport Name="ApproveRequest" Action="ManagerService.ApproveRequest"/>
+        <ActionImport Name="AssignAsset" Action="ManagerService.AssignAsset"/>
+        <ActionImport Name="insertAsset" Action="ManagerService.insertAsset"/>
+        <ActionImport Name="getMyNotifications" Action="ManagerService.getMyNotifications" EntitySet="NOTIFICATION"/>
+        <ActionImport Name="markNotificationRead" Action="ManagerService.markNotificationRead"/>
+      </EntityContainer>
+      <EntityType Name="userdetail">
+        <Key>
+          <PropertyRef Name="NAME"/>
+        </Key>
+        <Property Name="NAME" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="USRID" Type="Edm.Int32"/>
+      </EntityType>
+      <EntityType Name="AllRequest">
+        <Key>
+          <PropertyRef Name="ASRID"/>
+        </Key>
+        <Property Name="ASRID" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="REQID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="USRID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="USERNAME" Type="Edm.String" MaxLength="100"/>
+        <Property Name="ASTID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="CATID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="CATNAME" Type="Edm.String" MaxLength="100"/>
+        <Property Name="RDATE" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="STAT" Type="Edm.Int32"/>
+        <Property Name="PRITY" Type="Edm.String" MaxLength="20"/>
+      </EntityType>
+      <EntityType Name="AllAsset">
+        <Key>
+          <PropertyRef Name="ATUID"/>
+        </Key>
+        <Property Name="ATUID" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="ASTID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="ASTNAME" Type="Edm.String" MaxLength="100"/>
+        <Property Name="CATID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="SUBCATID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="SERIALNO" Type="Edm.String" MaxLength="50"/>
+        <Property Name="ASTST" Type="Edm.String" MaxLength="20"/>
+        <Property Name="PURCHASEDATE" Type="Edm.Date"/>
+        <Property Name="ISDEL" Type="Edm.String" MaxLength="1"/>
+        <Property Name="CRTDT" Type="Edm.Date"/>
+        <Property Name="CRTTM" Type="Edm.TimeOfDay"/>
+        <Property Name="CRTBY" Type="Edm.String" MaxLength="30"/>
+        <Property Name="CHNDT" Type="Edm.Date"/>
+        <Property Name="CHNTM" Type="Edm.TimeOfDay"/>
+        <Property Name="CHNBY" Type="Edm.String" MaxLength="30"/>
+        <Property Name="ASTQT" Type="Edm.Int32"/>
+        <Property Name="CATNAME" Type="Edm.String" MaxLength="100"/>
+      </EntityType>
+      <EntityType Name="cate">
+        <Key>
+          <PropertyRef Name="ACTID"/>
+        </Key>
+        <Property Name="ACTID" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="CATID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="CNAME" Type="Edm.String" MaxLength="100"/>
+        <Property Name="CDESC" Type="Edm.String" MaxLength="255"/>
+        <Property Name="STAT" Type="Edm.String" MaxLength="50"/>
+        <Property Name="ISDEL" Type="Edm.String" MaxLength="1"/>
+        <Property Name="CRTDT" Type="Edm.Date"/>
+        <Property Name="CRTTM" Type="Edm.TimeOfDay"/>
+        <Property Name="CRTBY" Type="Edm.String" MaxLength="30"/>
+        <Property Name="CHNDT" Type="Edm.Date"/>
+        <Property Name="CHNTM" Type="Edm.TimeOfDay"/>
+        <Property Name="CHNBY" Type="Edm.String" MaxLength="30"/>
+      </EntityType>
+      <EntityType Name="subcat">
+        <Key>
+          <PropertyRef Name="ASCID"/>
+        </Key>
+        <Property Name="ASCID" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="SCTID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="SCNAM" Type="Edm.String" MaxLength="100"/>
+        <Property Name="CATID" Type="Edm.String" MaxLength="30"/>
+        <Property Name="ISDEL" Type="Edm.String" MaxLength="1"/>
+        <Property Name="CRTDT" Type="Edm.Date"/>
+        <Property Name="CRTTM" Type="Edm.TimeOfDay"/>
+        <Property Name="CRTBY" Type="Edm.String" MaxLength="30"/>
+        <Property Name="CHNDT" Type="Edm.Date"/>
+        <Property Name="CHNTM" Type="Edm.TimeOfDay"/>
+        <Property Name="CHNBY" Type="Edm.String" MaxLength="30"/>
+      </EntityType>
+      <EntityType Name="assetreq">
+        <Key>
+          <PropertyRef Name="NAME"/>
+          <PropertyRef Name="CNAME"/>
+          <PropertyRef Name="PRITY"/>
+        </Key>
+        <Property Name="NAME" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="CNAME" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="RDATE" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="STAT" Type="Edm.Int32"/>
+        <Property Name="PRITY" Type="Edm.String" MaxLength="20" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="astassigned">
+        <Key>
+          <PropertyRef Name="NAME"/>
+          <PropertyRef Name="CNAME"/>
+          <PropertyRef Name="ASTID"/>
+          <PropertyRef Name="ASTNAME"/>
+        </Key>
+        <Property Name="USRID" Type="Edm.Int32"/>
+        <Property Name="NAME" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="CNAME" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="ASTID" Type="Edm.String" MaxLength="30" Nullable="false"/>
+        <Property Name="ASTNAME" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="ASDAT" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="STAT" Type="Edm.Int32"/>
+      </EntityType>
+      <EntityType Name="NOTIFICATION">
+        <Key>
+          <PropertyRef Name="ANTID"/>
+        </Key>
+        <Property Name="ANTID" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="NTFID" Type="Edm.Int32"/>
+        <Property Name="USRID" Type="Edm.Int32"/>
+        <Property Name="MSG" Type="Edm.String" MaxLength="5000"/>
+        <Property Name="ISRED" Type="Edm.Boolean"/>
+        <Property Name="ISDEL" Type="Edm.String" MaxLength="1"/>
+        <Property Name="CRTDT" Type="Edm.Date"/>
+        <Property Name="NOTYPE" Type="Edm.String" MaxLength="50"/>
+      </EntityType>
+      <Action Name="ApproveRequest" IsBound="false">
+        <Parameter Name="REQID" Type="Edm.String"/>
+        <Parameter Name="STATUS" Type="Edm.Int32"/>
+        <ReturnType Type="Edm.String"/>
+      </Action>
+      <Action Name="AssignAsset" IsBound="false">
+        <Parameter Name="REQID" Type="Edm.String"/>
+        <Parameter Name="ASTID" Type="Edm.String"/>
+        <ReturnType Type="Edm.String"/>
+      </Action>
+      <Action Name="insertAsset" IsBound="false">
+        <Parameter Name="P_ASTID" Type="Edm.String"/>
+        <Parameter Name="P_ASTNAME" Type="Edm.String"/>
+        <Parameter Name="P_CATID" Type="Edm.String"/>
+        <Parameter Name="P_SUBCATID" Type="Edm.String"/>
+        <Parameter Name="P_QTY" Type="Edm.Int32"/>
+        <Parameter Name="P_SERIALNO" Type="Edm.String"/>
+        <Parameter Name="P_PURCHASEDATE" Type="Edm.Date"/>
+        <Parameter Name="P_MANUFACTURER" Type="Edm.String"/>
+      </Action>
+      <Action Name="getMyNotifications" IsBound="false">
+        <ReturnType Type="Collection(ManagerService.NOTIFICATION)"/>
+      </Action>
+      <Action Name="markNotificationRead" IsBound="false">
+        <Parameter Name="ANTID" Type="Edm.Int32"/>
+      </Action>
+      <Annotations Target="ManagerService.userdetail/NAME">
+        <Annotation Term="Common.Label" String="NAME: Full Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.userdetail/USRID">
+        <Annotation Term="Common.Label" String="USRID: User ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/ASRID">
+        <Annotation Term="Common.Label" String="ASRID: Unique ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/REQID">
+        <Annotation Term="Common.Label" String="REQID: Request ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/USRID">
+        <Annotation Term="Common.Label" String="USRID: User ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/USERNAME">
+        <Annotation Term="Common.Label" String="NAME: Full Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/ASTID">
+        <Annotation Term="Common.Label" String="ASTID: Asset ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/CATID">
+        <Annotation Term="Common.Label" String="CATID: Category ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/CATNAME">
+        <Annotation Term="Common.Label" String="CNAME: Category Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/RDATE">
+        <Annotation Term="Common.Label" String="RDATE: Request Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/STAT">
+        <Annotation Term="Common.Label" String="STAT: Status"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllRequest/PRITY">
+        <Annotation Term="Common.Label" String="PRITY: Priority"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/ATUID">
+        <Annotation Term="Common.Label" String="ATUID: Unique ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/ASTID">
+        <Annotation Term="Common.Label" String="ASTID: ASSET ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/ASTNAME">
+        <Annotation Term="Common.Label" String="ASTNAME: Asset Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CATID">
+        <Annotation Term="Common.Label" String="CATID: Category ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/SUBCATID">
+        <Annotation Term="Common.Label" String="SUBCATID: Sub Category ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/SERIALNO">
+        <Annotation Term="Common.Label" String="SERIALNO: Serial Number"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/ASTST">
+        <Annotation Term="Common.Label" String="ASTST: Asset Status (AVAILABLE / ASSIGNED / MAINTENANCE)"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/PURCHASEDATE">
+        <Annotation Term="Common.Label" String="PURCHASEDATE: Purchase Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/ISDEL">
+        <Annotation Term="Common.Label" String="ISDEL: Is Deleted Flag"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CRTDT">
+        <Annotation Term="Common.Label" String="CRTDT: Created Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CRTTM">
+        <Annotation Term="Common.Label" String="CRTTM: Created Time"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CRTBY">
+        <Annotation Term="Common.Label" String="CRTBY: Created By"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CHNDT">
+        <Annotation Term="Common.Label" String="CHNDT: Changed/Updated Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CHNTM">
+        <Annotation Term="Common.Label" String="CHNTM: Changed/Updated Time"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CHNBY">
+        <Annotation Term="Common.Label" String="CHNBY: Changed By"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/ASTQT">
+        <Annotation Term="Common.Label" String="ASTQT: Asset quantity"/>
+      </Annotations>
+      <Annotations Target="ManagerService.AllAsset/CATNAME">
+        <Annotation Term="Common.Label" String="CNAME: Category Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/ACTID">
+        <Annotation Term="Common.Label" String="ACTID: Unique ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CATID">
+        <Annotation Term="Common.Label" String="CATID: Category ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CNAME">
+        <Annotation Term="Common.Label" String="CNAME: Category Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CDESC">
+        <Annotation Term="Common.Label" String="CDESC: Category Description"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/STAT">
+        <Annotation Term="Common.Label" String="STAT: Status"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/ISDEL">
+        <Annotation Term="Common.Label" String="ISDEL: Is Deleted Flag"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CRTDT">
+        <Annotation Term="Common.Label" String="CRTDT: Created Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CRTTM">
+        <Annotation Term="Common.Label" String="CRTTM: Created Time"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CRTBY">
+        <Annotation Term="Common.Label" String="CRTBY: Created By"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CHNDT">
+        <Annotation Term="Common.Label" String="CHNDT: Changed/Updated Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CHNTM">
+        <Annotation Term="Common.Label" String="CHNTM: Changed/Updated Time"/>
+      </Annotations>
+      <Annotations Target="ManagerService.cate/CHNBY">
+        <Annotation Term="Common.Label" String="CHNBY: Changed By"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/ASCID">
+        <Annotation Term="Common.Label" String="ASCID: Unique ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/SCTID">
+        <Annotation Term="Common.Label" String="SCTID:  SUB Category ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/SCNAM">
+        <Annotation Term="Common.Label" String="SCNAM: SUB Category Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CATID">
+        <Annotation Term="Common.Label" String="CATID: Category ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/ISDEL">
+        <Annotation Term="Common.Label" String="ISDEL: Is Deleted Flag"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CRTDT">
+        <Annotation Term="Common.Label" String="CRTDT: Created Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CRTTM">
+        <Annotation Term="Common.Label" String="CRTTM: Created Time"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CRTBY">
+        <Annotation Term="Common.Label" String="CRTBY: Created By"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CHNDT">
+        <Annotation Term="Common.Label" String="CHNDT: Changed/Updated Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CHNTM">
+        <Annotation Term="Common.Label" String="CHNTM: Changed/Updated Time"/>
+      </Annotations>
+      <Annotations Target="ManagerService.subcat/CHNBY">
+        <Annotation Term="Common.Label" String="CHNBY: Changed By"/>
+      </Annotations>
+      <Annotations Target="ManagerService.assetreq/NAME">
+        <Annotation Term="Common.Label" String="NAME: Full Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.assetreq/CNAME">
+        <Annotation Term="Common.Label" String="CNAME: Category Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.assetreq/RDATE">
+        <Annotation Term="Common.Label" String="RDATE: Request Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.assetreq/STAT">
+        <Annotation Term="Common.Label" String="STAT: Status"/>
+      </Annotations>
+      <Annotations Target="ManagerService.assetreq/PRITY">
+        <Annotation Term="Common.Label" String="PRITY: Priority"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/USRID">
+        <Annotation Term="Common.Label" String="USRID: User ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/NAME">
+        <Annotation Term="Common.Label" String="NAME: Full Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/CNAME">
+        <Annotation Term="Common.Label" String="CNAME: Category Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/ASTID">
+        <Annotation Term="Common.Label" String="ASTID: ASSET ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/ASTNAME">
+        <Annotation Term="Common.Label" String="ASTNAME: Asset Name"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/ASDAT">
+        <Annotation Term="Common.Label" String="ASDAT: Assigned Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.astassigned/STAT">
+        <Annotation Term="Common.Label" String="STAT: Status"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/ANTID">
+        <Annotation Term="Common.Label" String="ANTID: Unique ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/NTFID">
+        <Annotation Term="Common.Label" String="NTFID: Notification ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/USRID">
+        <Annotation Term="Common.Label" String="USRID: User ID"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/MSG">
+        <Annotation Term="Common.Label" String="MSG: Message"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/ISRED">
+        <Annotation Term="Common.Label" String="ISRED: Is Read"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/ISDEL">
+        <Annotation Term="Common.Label" String="ISDEL: Is Deleted Flag"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/CRTDT">
+        <Annotation Term="Common.Label" String="CRTDT: Created Date"/>
+      </Annotations>
+      <Annotations Target="ManagerService.NOTIFICATION/NOTYPE">
+        <Annotation Term="Common.Label" String="NOTYPE: Type"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

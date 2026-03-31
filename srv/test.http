@@ -20,11 +20,11 @@
 //GET http://localhost:4004/odata/v2/manager/AllRequest/$count?$filter=STAT eq 3
 //GET http://localhost:4004/odata/v2/employee/empreq?$filter=USRID eq 1002
 
-//GET http://localhost:34331/odata/v2/employee/getRequestsByUserId?USERID=1001
+//GET http://localhost:4004/odata/v2/employee/getRequestsByUserId?USERID=1002
 
  //GET  http://localhost:4004/odata/v2/manager/subcat?$filter=CATID eq 'C002'
 
-GET http://localhost:4004/odata/v2/employee/getAssetByAssetId?ASSTID='A010'
+//GET http://localhost:4004/odata/v2/employee/getAssetByAssetId?ASSTID='A010'
 
 //GET http://localhost:4004/odata/v2/employee/profile?$filter=USRID eq 1002
  
@@ -41,41 +41,42 @@ GET http://localhost:4004/odata/v2/employee/getAssetByAssetId?ASSTID='A010'
 
 //http://localhost:45601/odata/v2/manager/AllRequest?$filter=STAT%20eq%203
 
+
     # POST http://localhost:4004/odata/v2/manager/ApproveRequest
     # Content-Type: application/json
 
     # {
-    # "REQID": "REQ_023",
+    # "REQID": "REQ_112",
     # "STATUS": 1
     # }
-# POST http://localhost:42065/odata/v2/manager/AssignAsset
+
+# POST http://localhost:4004/odata/v2/manager/AssignAsset
 # Content-Type: application/json
 
 # {
-#   "REQID": "REQ_018",
-#   "ASTID": "A001"
+#   "REQID": "REQ_125",
+#   "ASTID": "A058"
 # }
 
+    POST http://localhost:4004/odata/v2/manager/insertAsset
+    Content-Type: application/json
 
-#  POST http://localhost:4004/odata/v2/manager/insertAsset
-#  Content-Type: application/json
-
-# {
-#   "P_ASTID": "A050",
-#   "P_ASTNAME": "dellyu",
-#   "P_CATID": "L001",
-#   "P_SUBCATID": "S002",
-#   "P_QTY": 1,
-#   "P_SERIALNO": "SN123456",
-#   "P_PURCHASEDATE": "2026-03-27",
-#   "P_MANUFACTURER": "Lenovo"
-# }
+    {
+    "P_ASTID": "null",
+    "P_ASTNAME": "hp11",
+    "P_CATID": "L001",
+    "P_SUBCATID": "S002",
+    "P_QTY": 1,
+    "P_SERIALNO": "SN123456",
+    "P_PURCHASEDATE": "2026-03-27",
+    "P_MANUFACTURER": "Lenovo"
+    }
 
 # POST http://localhost:4004/odata/v4/manager/markNotificationRead
-
 # Content-Type: application/json
+
 # {
 #   "ANTID": 7
 # }
 
-# GET  http://localhost:4004/odata/v2/manager/NOTIFICATION?$filter=ISRED eq false and USRID eq 1002
+//GET  http://localhost:4004/odata/v2/manager/NOTIFICATION?$filter=ISRED eq false and USRID eq 1002
